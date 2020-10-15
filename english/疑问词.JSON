@@ -1,0 +1,33 @@
+
+{
+    "疑问词":{
+        "who":{
+            "zh_desc":"谁(做主语)"
+        },
+        "whom":{
+            "zh_desc":"谁(接受动作)"
+        },
+        "what":{
+            "zh_desc":"什么"
+        },
+        "whose":{
+            "zh_desc":"谁的"
+        },
+        "which":{
+            "zh_desc":"哪个"
+        },
+        "when":{
+            "zh_desc":"什么时候"
+        },
+        "where":{
+            "zh_desc":"哪里"
+        },
+        "why":{
+            "zh_desc":"为什么"
+        },
+        "how":{
+            "zh_desc":"怎么"
+        }
+        
+    }
+}
