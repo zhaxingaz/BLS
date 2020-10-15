@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="https://rawgithub.com/zhaxingaz/BLS/main/jquery.min-1.11.3.js"></script>
+</head>
+<body>
+<script>
+
+    $(function(){
+
+        let PERSON = {
+            1:"第一人称",
+            2:"第二人称",
+            3:"第三人称"
+        };
+
+        let pronouns = {
+            "我":{
+                "person":1,//人称
+                "nominative":"I",//主格
+                "accusative":"me",//宾格
+                "adjective_possessive_pronoun":"my",//形容词性物主代词
+                "nominal_possessive_pronoun":"mine",//名词性物主代词
+                "reflexive_pronouns":"myself"//反身代词
+            },
+            "我们":{
+                "person":1,
+                "nominative":"we",
+                "accusative":"us",
+                "adjective_possessive_pronoun":"our",
+                "nominal_possessive_pronoun":"ours",
+                "reflexive_pronouns":"ourselves"
+            },
+            "你":{
+                "person":2,
+                "nominative":"you",
+                "accusative":"you",
+                "adjective_possessive_pronoun":"your",
+                "nominal_possessive_pronoun":"yours",
+                "reflexive_pronouns":"yourself"
+            },
+            "你们":{
+                "person":2,
+                "nominative":"you",
+                "accusative":"you",
+                "adjective_possessive_pronoun":"your",
+                "nominal_possessive_pronoun":"yours",
+                "reflexive_pronouns":"yourself"
+            },
+            "他":{
+                "person":3,
+                "nominative":"he",
+                "accusative":"him",
+                "adjective_possessive_pronoun":"his",
+                "nominal_possessive_pronoun":"his",
+                "reflexive_pronouns":"himself"
+            },
+            "她":{
+                "person":3,
+                "nominative":"she",
+                "accusative":"her",
+                "adjective_possessive_pronoun":"hers",
+                "nominal_possessive_pronoun":"her",
+                "reflexive_pronouns":"herself"
+            },
+            "它":{
+                "person":3,
+                "nominative":"it",
+                "accusative":"it",
+                "adjective_possessive_pronoun":"its",
+                "nominal_possessive_pronoun":"its",
+                "reflexive_pronouns":"itself"
+            },
+            "他们":{
+                "person":3,
+                "nominative":"they",
+                "accusative":"them",
+                "adjective_possessive_pronoun":"their",
+                "nominal_possessive_pronoun":"theirs",
+                "reflexive_pronouns":"themselves"
+            },
+        };
+
+        let zh_worlds = {
+            "":{
+                "person":3,
+                "nominative":"they",
+                "accusative":"them",
+                "adjective_possessive_pronoun":"their",
+                "nominal_possessive_pronoun":"theirs",
+                "reflexive_pronouns":"themselves"
+            },
+
+        };
+
+        //加载数据文件
+        let file_dir = "https://raw.githubusercontent.com/zhaxingaz/BLS/main/english/"
+        loadGithubFile(file_dir + "LOADCONFIG.JSON", function(){
+            for(let i in window.DATA_FILES){
+                loadGithubFile(file_dir + window.DATA_FILES[i]);
+            }
+        });
+        
+
+        $("#go").on('click', function() {
+            alert($("#en_text").val());
+        })
+
+        setTimeout(function(){
+            renderTypeSelect();
+
+        },3000);
+    });
+
+    function loadGithubFile(url, callback) {
+        var request = new XMLHttpRequest();
+        request.open("get", url);/*设置请求方法与路径*/
+        request.send(null);/*不发送数据到服务器*/
+        request.onload = function () {/*XHR对象获取到返回信息后执行*/
+            if (request.status == 200) {/*返回状态为200，即为数据获取成功*/
+                var json = JSON.parse(request.responseText);
+                for(let k in json){
+                    window[k] = json[k];
+                }
+                console.log(json);
+                if(callback){
+                    callback();
+                }
+            }
+        }
+    }
+    
+
+    function renderTypeSelect(){
+        for(let key in window.OPTYPE){
+            console.info(key);
+            $('#type').append("<option value='"+key+"'>"+key+"</option>")
+        }
+
+    }
+
+
+</script>
+
+
+<div style="width:800px;">
+    <h3>input</h3>
+    <br>
+    <select id="type"style="width:100%;height: 40px;"></select>
+    <br>
+    <textarea id="en_text" rows="5" style="width:99.2%; vertical-align:top"></textarea>
+    <br>
+    <br>
+    <button id="go" type="button" style="width:100%;height: 40px;margin: auto;">GO</button>
+    <br>
+    <br>
+    <table class="table table-striped" style="table-layout:fixed; word-break: break-all; word-wrap: break-word;">
+        <tr>
+            <td>Why</td>
+            <td>do</td>
+            <td>not </td>
+            <td>you</td>
+            <td>eat</td>
+        </tr>
+        <tr>
+            <td>为什么</td>
+            <td>do</td>
+            <td>不 </td>
+            <td>你</td>
+            <td>吃饭</td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>
