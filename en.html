@@ -9,23 +9,29 @@
 <body>
 <script>
     /**
-     * 1.输入中文句子,判断时态,分解单词,找到时表词，
+     * 1.输入中文句子,选择时态,分解单词,找到时表词，
      */
 
     $(function(){
 
         window.DATA_FILES = ["OPTYPE.JSON"];
 
-        window.OPTYPE = {
-            "疑问句":{
-                "格式":["疑问词","时表词","主语","句剩","动词"]
-            }
+        window.OPTYPE = ["疑问句"];
+
+        window.疑问句 = {
+            "格式":[
+                {"疑问词":{}},
+                {"时表词":{}},
+                {"主语":{}},
+                {"句剩":{}},
+                {"动词":{}}
+            ]
         };
 
         window.时态={
             "一般现在时":{
                 "zh_desc":"经常、反复发生的动作或行为某种状况",
-                "form":"do/does"
+                "form":["do"/"does"]
             }
         };
 
@@ -45,13 +51,13 @@
 
 
 
-        let PERSON = {
+        window.人称 = {
             1:"第一人称",
             2:"第二人称",
             3:"第三人称"
         };
 
-        let pronouns = {
+        window.代词 = {
             "我":{
                 "person":1,//人称
                 "nominative":"I",//主格
@@ -118,15 +124,23 @@
             },
         };
 
-        let zh_worlds = {
+        window.zh_words = {
             "你":{
                 "en_desc":"you"
+            },
+            "为什么":{
+                "en_desc":"why"
+            },
+            "不":{
+                "en_desc":"not"
             },
             "吃饭":{
                 "en_desc":"eat"
             },
 
         };
+
+        window.filter_worlds = ['在','吗'];
 
         //加载数据文件
         // let file_dir = "https://raw.githubusercontent.com/zhaxingaz/BLS/main/english/"
@@ -142,10 +156,10 @@
             outputResult();
         })
 
-        setTimeout(function(){
-            renderTypeSelect();
+        renderTypeSelect();
+        // setTimeout(function(){
 
-        },3000);
+        // },3000);
     });
 
     function loadGithubFile(url, callback) {
@@ -168,24 +182,85 @@
     
 
     function renderTypeSelect(){
-        for(let key in window.OPTYPE){
-            console.info(key);
-            $('#type').append("<option value='"+key+"'>"+key+"</option>")
-        }
+        // for(let key in window.OPTYPE){
+        //     console.info(key);
+        //     $('#type').append("<option value='"+key+"'>"+key+"</option>")
+        // }
+        $('#type').append("<option value='疑问句'>疑问句</option>")
 
     }
 
     function outputResult(){
         let t = $("#en_text").val();
-        let arr = t.split(" ");
-        for(let i in arr){
-            if(arr[i]){
-
-
-
+        let source_arr = t.split(" ");
+        let source_target = {};
+        let variant = { "疑问词":"", "时表词":"", "主语":"", "句剩":"", "动词":"" };
+        
+        for(let i in source_arr){
+            
+            let source_val = source_arr[i];
+            console.info('source_val=',source_val);
+            if(!source_target[source_val]){
+                source_target[source_val] = {};
             }
-            $('#type').append("<option value='"+key+"'>"+key+"</option>")
+            //判断不需要翻译的词
+            if(filter_worlds.indexOf(source_val) > -1){
+                source_target[source_val]['en_desc'] = source_val;
+                console.warn('不对[ '+source_val+' ]进行翻译');
+                
+            }else{
+                let tmp_word = zh_words[source_val];
+                source_target[source_val]['en_desc'] = tmp_word ? tmp_word['en_desc'] : source_val;
+                console.warn('对[ '+source_val+' ]进行翻译,结果：[ '+ source_target[source_val]+' ]');
+            }
+            // 加载代词规则
+            if(代词[source_val]){
+                source_target[source_val]['pronoun'] = 代词[source_val];
+            }
+
+            //$('#type').append("<option value='"+key+"'>"+key+"</option>")
         }
+        console.info('翻译结果：',source_target);
+        variant["疑问词"] = findQuestionWord();
+        variant["时表词"] = findQuestionWord();
+        variant["主语"] = findQuestionWord();
+        variant["句剩"] = findQuestionWord();
+        variant["动词"] = findQuestionWord();
+
+
+        let sequence = variant["疑问词"] +" "+variant["时表词"] +" "+variant["主语"] +" "+variant["句剩"] +" "+variant["动词"];
+        console.info('sequence',sequence);
+
+
+    }
+
+    /*找主语*/
+    function findSubject(){
+
+
+    }
+
+    /*找疑问词*/
+    function findQuestionWord(){
+
+        
+    }
+
+    /*找时表词*/
+    function findQuestionWord(){
+
+
+    }
+
+    /*找动词*/
+    function findQuestionWord(){
+
+
+    }
+
+    /*找句剩*/
+    function findQuestionWord(){
+        
 
     }
 
@@ -197,13 +272,27 @@
     <h3>input</h3>
     <br>
     <select id="type"style="width:100%;height: 40px;"></select>
+    <select id="type"style="width:100%;height: 40px;">
+        <option value="">时态</option>
+        <option value="一般现在时">一般现在时</option>
+        <option value="一般过去时">一般过去时</option>
+        <option value="一般将来时">一般将来时</option>
+        <option value="现在进行时">现在进行时</option>
+    </select>
     <br>
-    <textarea id="en_text" rows="5" style="width:99.2%; vertical-align:top">你 为什么 吃饭</textarea>
+    <textarea id="en_text" rows="5" style="width:99.2%; vertical-align:top"></textarea>
     <br>
     <br>
     <button id="go" type="button" style="width:100%;height: 40px;margin: auto;">GO</button>
     <br>
     <br>
+   
+    <p>一般现在时：When do you usually eat  / 你 一般 什么时候 吃饭</p>
+    <p>一般过去时：Where did you eat  / 你 在 哪里 吃的饭</p>
+    <p>一般将来时：Where are you going to eat  / 你 去 哪里 吃饭</p>
+    <p>现在进行时：Are you eating  / 你 在 吃饭 吗</p>
+
+    
     <table id="rtable" class="table table-striped" style="table-layout:fixed; word-break: break-all; word-wrap: break-word;">
         <tr>
             <td>Why</td>
